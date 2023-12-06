@@ -19,7 +19,7 @@ class Objective(BaseObjective):
         'reg': [1., 1e-1, 1e-2, 1e-3],
     }
 
-    def __init__(self, reg):
+    def __init__(self, reg=1e-1):
         self.reg = reg
 
     def set_data(self, X, y, groups):
@@ -33,6 +33,7 @@ class Objective(BaseObjective):
         self.lmbd = self.reg * lmbd_max
 
         self.X, self.y = X, y
+        self.groups = groups
         self.grp_indices, self.grp_ptr = grp_indices, grp_ptr
 
         self.datafit = QuadraticGroup(grp_ptr, grp_indices)
@@ -50,7 +51,7 @@ class Objective(BaseObjective):
 
     def get_objective(self):
         return dict(
-            X=self.X, y=self.y, alpha=self.alpha, groups=self.groups,
+            X=self.X, y=self.y, lmbd=self.lmbd, groups=self.groups,
             grp_indices=self.grp_indices, grp_ptr=self.grp_ptr
         )
 
@@ -67,3 +68,7 @@ class Objective(BaseObjective):
             )
 
         return lmbd_max
+
+    def get_one_result(self):
+        n_features = self.X.shape[1]
+        return dict(w=np.zeros(n_features))

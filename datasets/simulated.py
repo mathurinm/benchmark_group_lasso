@@ -11,11 +11,11 @@ class Dataset(BaseDataset):
     name = "Simulated"
 
     parameters = {
-        'n_samples, n_features': [(100, 3000)],
+        'n_samples, n_features': [(100, 200)],
         'groups': [10]
     }
 
-    def __init__(self, n_samples, n_features, groups, random_state=0):
+    def __init__(self, n_samples=50, n_features=50, groups=10, random_state=0):
         self.n_samples, self.n_features = n_samples, n_features
         self.groups = groups
         self.random_state = random_state

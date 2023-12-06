@@ -2,6 +2,7 @@ from benchopt import BaseSolver
 from benchopt import safe_import_context
 
 with safe_import_context() as import_ctx:
+    import warnings
     import numpy as np
     from celer import GroupLasso
 
@@ -15,6 +16,7 @@ class Solver(BaseSolver):
     def set_objective(self, X, y, lmbd, groups, grp_indices, grp_ptr):
         self.X, self.y = X, y
 
+        warnings.filterwarnings('ignore')
         self.model = GroupLasso(
             groups, lmbd, max_iter=1, max_epochs=100,
             tol=1e-12, fit_intercept=False,

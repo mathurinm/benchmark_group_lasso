@@ -1,0 +1,9 @@
+dataset:
+  - Simulated[n_samples=100,n_features=100,groups=5]
+
+objective:
+  - Group Lasso objective[reg=[1,1e-1,1e-2,1e-3]]
+
+max-runs: 50
+n-repetitions: 1
+n-jobs: 15
