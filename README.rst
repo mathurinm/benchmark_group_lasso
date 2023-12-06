@@ -5,13 +5,13 @@ Benchmark Group Lasso
 This benchmark is dedicated to solver of **Group Lasso problem**. The problem reads
 
 $$
-\\min_{\\beta} \frac{1}{n} \\lVert y - X\\beta \\rVert^2 + \\lambda \\sum_g \\lVert \\beta_{[g]} \\rVert
+\\min_{\\beta \\in \\mathbb{R}^p} \frac{1}{n} \\lVert y - X\\beta \\rVert^2 + \\lambda \\sum_g \\lVert \\beta_{[g]} \\rVert
 $$
 
 with
 
 $$
-y \\in \\mathbb{R}^n, \\, \\, X \\in \\mathbb{R}^{n \\times p}
+y \\in \\mathbb{R}^n, \\, \\, X \\in \\mathbb{R}^{n \\times p}, \\lambda > 0
 $$
 
 where $n$ (or ``n_samples``) stands for the number of samples, $p$ (or ``n_features``) stands for the number of features, and  $\\beta_{[g]}$ are the coefficients of the $g$-th group.
