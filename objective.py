@@ -13,7 +13,7 @@ with safe_import_context() as import_ctx:
 class Objective(BaseObjective):
     name = "Group Lasso objective"
 
-    requiremens = ["pip:skglm"]
+    requirements = ["pip:skglm"]
 
     parameters = {
         'reg': [1., 1e-1, 1e-2, 1e-3],
