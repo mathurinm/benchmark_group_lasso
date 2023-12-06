@@ -5,10 +5,11 @@ Benchmark Group Lasso
 This benchmark is dedicated to solver of **Group Lasso problem**. The problem reads
 
 $$
-\\min_{\\beta} \\lVert y - X\\beta \\rVert + \\lambda \\sum_g \lVert \\beta_{[g]} \\rVert
+\\min_{\\beta} \frac{1}{n} \\lVert y - X\\beta \\rVert^2 + \\lambda \\sum_g \\lVert \\beta_{[g]} \\rVert
 $$
 
 with
+
 $$
 y \\in \\mathbb{R}^n, \\, \\, X \\in \\mathbb{R}^{n \\times p}
 $$
