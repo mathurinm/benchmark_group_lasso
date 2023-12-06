@@ -13,7 +13,7 @@ class Dataset(BaseDataset):
 
     parameters = {'groups': [4]}
 
-    def __init__(self, groups):
+    def __init__(self, groups=4):
         self.groups = groups
 
     def get_data(self):
