@@ -1,5 +1,7 @@
 dataset:
   - Simulated[n_samples=100,n_features=100,groups=5]
+  - Molecular Biology Promoters
+  - Drugs Potency
 
 objective:
   - Group Lasso objective[reg=[1,1e-1,1e-2,1e-3]]
