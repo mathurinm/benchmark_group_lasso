@@ -5,7 +5,7 @@ Benchmark Group Lasso
 This benchmark is dedicated to solver of **Group Lasso problem**. The problem reads
 
 $$
-\\min_{\\beta \\in \\mathbb{R}^p} \frac{1}{n} \\lVert y - X\\beta \\rVert^2 + \\lambda \\sum_g \\lVert \\beta_{[g]} \\rVert
+\\min_{\\beta \\in \\mathbb{R}^p} \\frac{1}{n} \\lVert y - X\\beta \\rVert^2 + \\lambda \\sum_g \\lVert \\beta_{[g]} \\rVert
 $$
 
 with
