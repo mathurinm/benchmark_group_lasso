@@ -11,7 +11,7 @@ class Dataset(BaseDataset):
     name = "Simulated"
 
     parameters = {
-        'n_samples, n_features': [(100, 200)],
+        'n_samples, n_features': [(100, 200), (1000, 2000)],
         'groups': [10]
     }
 
