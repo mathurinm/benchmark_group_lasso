@@ -8,6 +8,7 @@ with safe_import_context() as import_ctx:
     from skglm.datafits import QuadraticGroup
     from skglm import GeneralizedLinearEstimator
     from skglm.penalties import WeightedL1GroupL2
+    from skglm.utils.jit_compilation import compiled_clone
 
 
 class Solver(BaseSolver):
@@ -34,12 +35,12 @@ class Solver(BaseSolver):
         weights_g = (1 - self.tau) * np.ones(n_groups, dtype=np.float64)
         weights_f = self.tau * np.ones(self.X.shape[1])
 
-        penalty = WeightedL1GroupL2(
+        penalty = compiled_clone(WeightedL1GroupL2(
             alpha=self.lmbd, weights_groups=weights_g,
             weights_features=weights_f, grp_indices=grp_indices,
-            grp_ptr=grp_ptr)
+            grp_ptr=grp_ptr))
 
-        datafit = QuadraticGroup(grp_ptr, grp_indices)
+        datafit = compiled_clone(QuadraticGroup(grp_ptr, grp_indices))
         solver = GroupBCD(ws_strategy="fixpoint", verbose=0, tol=1e-10)
 
         self.model = GeneralizedLinearEstimator(datafit, penalty,
@@ -56,3 +57,7 @@ class Solver(BaseSolver):
 
     def get_result(self):
         return dict(beta=self.coef)
+
+    def warm_up(self):
+        # cache numba compilation
+        self.run(n_iter=4)
