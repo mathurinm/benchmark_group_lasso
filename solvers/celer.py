@@ -13,7 +13,12 @@ class Solver(BaseSolver):
 
     requirements = ["pip:celer"]
 
-    def set_objective(self, X, y, lmbd, groups, grp_indices, grp_ptr):
+    def skip(self, X, y, lmbd, groups, grp_indices, grp_ptr, tau):
+        if tau != 0:
+            return True, "Only Group Lasso is supported by celer"
+        return False, None
+
+    def set_objective(self, X, y, lmbd, groups, grp_indices, grp_ptr, tau):
         self.X, self.y = X, y
 
         warnings.filterwarnings('ignore')
@@ -35,4 +40,4 @@ class Solver(BaseSolver):
         self.w = self.model.coef_
 
     def get_result(self):
-        return dict(w=self.w)
+        return dict(beta=self.w)
