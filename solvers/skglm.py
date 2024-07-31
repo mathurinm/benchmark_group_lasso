@@ -6,7 +6,6 @@ with safe_import_context() as import_ctx:
 
     from skglm.solvers import GroupBCD
     from skglm.datafits import QuadraticGroup
-    from skglm import GeneralizedLinearEstimator
     from skglm.penalties import WeightedL1GroupL2
     from skglm.utils.jit_compilation import compiled_clone
 
@@ -35,28 +34,23 @@ class Solver(BaseSolver):
         weights_g = (1 - self.tau) * np.ones(n_groups, dtype=np.float64)
         weights_f = self.tau * np.ones(self.X.shape[1])
 
-        penalty = compiled_clone(WeightedL1GroupL2(
+        self.penalty = compiled_clone(WeightedL1GroupL2(
             alpha=self.lmbd, weights_groups=weights_g,
             weights_features=weights_f, grp_indices=grp_indices,
             grp_ptr=grp_ptr))
 
-        datafit = compiled_clone(QuadraticGroup(grp_ptr, grp_indices))
-        solver = GroupBCD(ws_strategy="fixpoint", verbose=0, tol=1e-10)
-
-        self.model = GeneralizedLinearEstimator(datafit, penalty,
-                                                solver=solver)
+        self.datafit = compiled_clone(QuadraticGroup(grp_ptr, grp_indices))
+        self.solver = GroupBCD(ws_strategy="fixpoint", verbose=0, tol=1e-10)
 
     def run(self, n_iter):
-        if n_iter == 0:
-            self.coef = np.zeros([self.X.shape[1]])
-        else:
-            self.model.max_iter = n_iter
-            self.model.fit(self.X, self.y)
+        self.solver.max_iter = n_iter
 
-            self.coef = self.model.coef_.flatten()
+        self.w, _, _ = self.solver.solve(
+            self.X, self.y, self.datafit, self.penalty
+        )
 
     def get_result(self):
-        return dict(beta=self.coef)
+        return dict(beta=self.w)
 
     def warm_up(self):
         # cache numba compilation
