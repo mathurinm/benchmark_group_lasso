@@ -1,20 +1,20 @@
-Benchmark Group Lasso
-=====================
+Benchmark Sparse Group Lasso
+============================
 |Build Status| |Python 3.6+|
 
-This benchmark is dedicated to solver of **Group Lasso problem**. The problem reads
+This benchmark is dedicated to solver of **Sparse Group Lasso problem**. The problem reads
 
 $$
-\\min_{\\beta \\in \\mathbb{R}^p} \\frac{1}{n} \\lVert y - X\\beta \\rVert^2 + \\lambda \\sum_g \\lVert \\beta_{[g]} \\rVert
+\\min_{\\beta \\in \\mathbb{R}^p} \\frac{1}{2n} \\lVert y - X\\beta \\rVert^2 + \\lambda(\\tau \\lVert beta \\rVert_1  + (1-\\tau)  \\sum_g \\lVert \\beta_{[g]} \\rVert_2)
 $$
 
 with
 
 $$
-y \\in \\mathbb{R}^n, \\, \\, X \\in \\mathbb{R}^{n \\times p}, \\lambda > 0
+y \\in \\mathbb{R}^n, \\, \\, X \\in \\mathbb{R}^{n \\times p}, \\lambda > 0, 0\leq\\tau < 1
 $$
 
-where $n$ (or ``n_samples``) stands for the number of samples, $p$ (or ``n_features``) stands for the number of features, and  $\\beta_{[g]}$ are the coefficients of the $g$-th group.
+where $n$ (or ``n_samples``) stands for the number of samples, $p$ (or ``n_features``) stands for the number of features, $\\beta$ are the coefficients of the features, and  $\\beta_{[g]}$ are the coefficients of the $g$-th group.
 
 
 Install
