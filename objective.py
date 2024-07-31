@@ -18,10 +18,10 @@ class Objective(BaseObjective):
         "pip::git+https://github.com/scikit-learn-contrib/skglm",
         "pip::git+https://github.com/EugeneNdiaye/Gap_Safe_Rules"
     ]
-
+    # tau = 0 is Group Lasso
     parameters = {
-        'tau': [0, 0.5, 1],
-        'reg': [0.5, 0.95, 1, 1.01]
+        'tau': [0, 0.5, 0.9],
+        'reg': [1., 1e-1, 1e-2]
     }
 
     def value_penalty(self, w):
