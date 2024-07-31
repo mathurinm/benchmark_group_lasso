@@ -40,7 +40,9 @@ class Solver(BaseSolver):
             grp_ptr=grp_ptr))
 
         self.datafit = compiled_clone(QuadraticGroup(grp_ptr, grp_indices))
-        self.solver = GroupBCD(ws_strategy="fixpoint", verbose=0, tol=1e-10)
+        self.solver = GroupBCD(
+            fit_intercept=False, ws_strategy='fixpoint', verbose=0,
+            max_iter=1, tol=1e-12)
 
     def run(self, n_iter):
         self.solver.max_iter = n_iter
