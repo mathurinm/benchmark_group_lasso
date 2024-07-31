@@ -45,3 +45,7 @@ class Solver(BaseSolver):
 
     def get_result(self):
         return dict(beta=self.coef)
+
+    def warm_up(self):
+        # cache numba compilation
+        self.run(n_iter=4)
