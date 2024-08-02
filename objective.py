@@ -11,7 +11,7 @@ with safe_import_context() as import_ctx:
 class Objective(BaseObjective):
     name = "Sparse Group Lasso"
 
-# skglm is needed here to create group partition and indices
+    # skglm is needed here to create group partition and indices
     requirements = [
         "numpy'<2'",
         "pip::git+https://github.com/scikit-learn-contrib/skglm",
@@ -64,6 +64,9 @@ class Objective(BaseObjective):
             grp_indices=self.grp_indices, grp_ptr=self.grp_ptr, tau=self.tau
         )
 
+    # this is a heuristic to compute lambda_max
+    # when tau == 0, it provides the exact value of lambda_max
+    # otherwise, it returns a cheaper to compute upper bound
     def _compute_lmbd_max(self):
         lmbd_max_l1 = 0.
         lmbd_max_group = 0.
