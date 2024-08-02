@@ -1,8 +1,8 @@
-Benchmark Sparse Group Lasso
+Sparse Group Lasso Benchmark
 ============================
 |Build Status| |Python 3.6+|
 
-This benchmark is dedicated to solver of **Sparse Group Lasso problem**. The problem reads
+This benchmark is dedicated to the **Sparse Group Lasso**. The optimization problem reads
 
 $$
 \\min_{\\beta \\in \\mathbb{R}^p} \\frac{1}{2n} \\lVert y - X\\beta \\rVert^2 + \\lambda(\\tau \\lVert \\beta \\rVert_1  + (1-\\tau)  \\sum_g \\lVert \\beta_{[g]} \\rVert_2)

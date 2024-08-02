@@ -4,7 +4,7 @@ dataset:
   - Drugs Potency
 
 objective:
-  - Sparse Group Lasso objective[reg=[1,1e-1,1e-2,1e-3]]
+  - Sparse Group Lasso[reg=[1,1e-1,1e-2,1e-3]]
 
 max-runs: 50
 n-repetitions: 1

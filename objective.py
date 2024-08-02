@@ -9,12 +9,12 @@ with safe_import_context() as import_ctx:
 
 
 class Objective(BaseObjective):
-    name = "Sparse Group Lasso objective"
+    name = "Sparse Group Lasso"
 
+# skglm is needed here to create group partition and indices
     requirements = [
         "numpy'<2'",
         "pip::git+https://github.com/scikit-learn-contrib/skglm",
-        "pip::git+https://github.com/EugeneNdiaye/Gap_Safe_Rules"
     ]
     # tau = 0 is Group Lasso
     parameters = {

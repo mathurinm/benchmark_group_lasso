@@ -7,10 +7,8 @@ with safe_import_context() as import_ctx:
 
 
 class Solver(BaseSolver):
-    """Eugene Ndiaye, Olivier Fercoq, Alexandre Gramfort, and Joseph Salmon.
-    2016. GAP safe screening rules for Sparse-Group Lasso. In Proceedings
-    of the 30th International Conference on Neural Information Processing
-    Systems (NIPS'16). Curran Associates Inc., Red Hook, NY, USA, 388–396.
+    """E. Ndiaye, O. Fercoq, A. Gramfort, and J. Salmon, "GAP safe screening
+    rules for Sparse-Group Lasso", NeurIPS 2016.
     """
     name = "gsroptim"
     sampling_strategy = "iteration"
