@@ -85,4 +85,4 @@ class Objective(BaseObjective):
         return lambda_max / self.n_samples
 
     def get_one_result(self):
-        return dict(w=np.zeros(self.X.shape[1]))
+        return dict(w=np.zeros(self.n_features))
