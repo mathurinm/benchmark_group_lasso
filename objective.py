@@ -7,8 +7,6 @@ with safe_import_context() as import_ctx:
 
     from skglm.utils.data import grp_converter
 
-    from gsroptim.sgl import build_lambdas
-
 
 class Objective(BaseObjective):
     name = "Sparse Group Lasso objective"
@@ -67,22 +65,26 @@ class Objective(BaseObjective):
         )
 
     def _compute_lmbd_max(self):
-        size_groups = self.groups * np.ones(
-            self.n_features // self.groups, dtype=np.int32)
+        lmbd_max_l1 = 0.
+        lmbd_max_group = 0.
+        n_groups = len(self.grp_ptr) - 1
 
-        # omega stores the square root of the size of each group
-        # it is used to scale the regularization parameters for each group
-        omega = np.ones(self.n_features // self.groups)
+        # Compute lambda max for the L1 part
+        lmbd_max_l1 = norm(self.X.T @ self.y, ord=np.inf) / self.n_samples
 
-        # g_start contains the starting index for each group, computed using
-        # the cumulative sum of group size. It is used to identify the columns
-        # in X that belong to each group
-        g_start = np.cumsum(size_groups, dtype=np.int32) - size_groups[0]
+        # Compute lambda max for the group lasso part
+        for g in range(n_groups):
+            grp_g_indices = self.grp_indices[
+                self.grp_ptr[g]: self.grp_ptr[g+1]]
+            lmbd_max_group = max(
+                lmbd_max_group,
+                norm(self.X[:, grp_g_indices].T @ self.y) / self.n_samples
+            )
 
-        # Compute the maximum lambda value for regularization
-        lambda_max = build_lambdas(self.X, self.y, omega, size_groups,
-                                   g_start, n_lambdas=1, tau=self.tau)[0]
-        return lambda_max / self.n_samples
+        # Combine the two parts using the tau parameter
+        lmbd_max = self.tau * lmbd_max_l1 + (1 - self.tau) * lmbd_max_group
+
+        return lmbd_max
 
     def get_one_result(self):
         return dict(w=np.zeros(self.n_features))
