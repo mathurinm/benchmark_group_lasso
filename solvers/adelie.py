@@ -22,11 +22,6 @@ class Solver(BaseSolver):
 
     def set_objective(self, X, y, lmbd, groups, grp_indices, grp_ptr, tau):
         self.X, self.y, self.lmbd, self.grp_size = X, y, lmbd, groups
-        self.grp_indices, self.grp_ptr = grp_indices, grp_ptr
-
-        self.n_groups = len(self.grp_ptr) - 1
-
-        self.weights_g = np.ones(self.n_groups, dtype=np.float64)
 
         self.groups = self.grp_size*np.arange(X.shape[-1] // self.grp_size)
         self.omega = np.ones(self.X.shape[1] // self.grp_size)

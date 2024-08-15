@@ -27,9 +27,9 @@ class Solver(BaseSolver):
 
     def set_objective(self, X, y, lmbd, groups, grp_indices, grp_ptr, tau):
         self.X, self.y, self.lmbd, self.groups = X, y, lmbd, groups
-        self.grp_indices, self.grp_ptr, self.tau = grp_indices, grp_ptr, tau
+        self.tau = tau
 
-        n_groups = len(self.grp_ptr) - 1
+        n_groups = len(grp_ptr) - 1
 
         weights_g = (1 - self.tau) * np.ones(n_groups, dtype=np.float64)
         weights_f = self.tau * np.ones(self.X.shape[1])
