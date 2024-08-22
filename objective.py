@@ -7,6 +7,8 @@ with safe_import_context() as import_ctx:
 
     from skglm.utils.data import grp_converter
 
+    from gsroptim.sgl import build_lambdas
+
 
 class Objective(BaseObjective):
     name = "Sparse Group Lasso"
@@ -64,30 +66,25 @@ class Objective(BaseObjective):
             grp_indices=self.grp_indices, grp_ptr=self.grp_ptr, tau=self.tau
         )
 
-    # this is a heuristic to compute lambda_max
-    # when tau == 0, it provides the exact value of lambda_max
-    # otherwise, it returns a cheaper to compute upper bound
     def _compute_lmbd_max(self):
-        lmbd_max_l1 = 0.
-        lmbd_max_group = 0.
-        n_groups = len(self.grp_ptr) - 1
+        # Size of each group, might be non-contiguous
+        size_groups = np.array(self.groups, dtype=np.int32)
 
-        # Compute lambda max for the L1 part
-        lmbd_max_l1 = norm(self.X.T @ self.y, ord=np.inf) / self.n_samples
+        # Omega stores the square root of the size of each group
+        # It is used to scale the regularization parameters for each group
+        omega = np.sqrt(size_groups)
 
-        # Compute lambda max for the group lasso part
-        for g in range(n_groups):
-            grp_g_indices = self.grp_indices[
-                self.grp_ptr[g]: self.grp_ptr[g+1]]
-            lmbd_max_group = max(
-                lmbd_max_group,
-                norm(self.X[:, grp_g_indices].T @ self.y) / self.n_samples
-            )
+        # g_start contains the starting index for each group, computed using
+        # the cumulative sum of group size.
+        g_start = np.zeros(len(size_groups), dtype=np.int32)
+        g_start[1:] = np.cumsum(size_groups[:-1])
 
-        # Combine the two parts using the tau parameter
-        lmbd_max = self.tau * lmbd_max_l1 + (1 - self.tau) * lmbd_max_group
+        # Compute the maximum lambda value for regularization
+        lambda_max, _ = build_lambdas(
+            self.X, self.y, omega, size_groups, g_start, n_lambdas=1,
+            tau=self.tau)
 
-        return lmbd_max
+        return lambda_max / self.n_samples
 
     def get_one_result(self):
         return dict(w=np.zeros(self.n_features))
