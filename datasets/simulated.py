@@ -12,7 +12,7 @@ class Dataset(BaseDataset):
 
     parameters = {
         'n_samples, n_features': [(100, 200), (1000, 2000)],
-        'groups': [10]
+        'groups': [[10]]
     }
 
     def __init__(self, n_samples=50, n_features=50, groups=10, random_state=0):

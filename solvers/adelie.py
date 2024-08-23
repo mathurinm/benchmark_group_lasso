@@ -23,7 +23,7 @@ class Solver(BaseSolver):
     def set_objective(self, X, y, lmbd, groups, grp_indices, grp_ptr, tau):
         self.X, self.y, self.lmbd, self.grp_size = X, y, lmbd, groups
 
-        self.groups = self.grp_size*np.arange(X.shape[-1] // self.grp_size)
+        self.groups = np.array(self.grp_size, dtype=np.int32)
         self.omega = np.ones(self.X.shape[1] // self.grp_size)
 
     def run(self, n_iter):
