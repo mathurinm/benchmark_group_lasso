@@ -8,3 +8,4 @@ objective:
 
 max-runs: 50
 n-repetitions: 1
+n-jobs: 15

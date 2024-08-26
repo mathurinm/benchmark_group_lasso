@@ -13,27 +13,26 @@ class Objective(BaseObjective):
 
     # skglm is needed here to create group partition and indices
     requirements = [
-        "numpy'<2'",
-        "pip::git+https://github.com/scikit-learn-contrib/skglm",
+        "pip::git+https://github.com/scikit-learn-contrib/skglm"
     ]
-    # tau = 0 is Group Lasso
+    # tau = 0 is Group Lasso, tau = 1 is Lasso
     parameters = {
         'tau': [0, 0.5, 0.9],
         'reg': [1., 1e-1, 1e-2]
     }
 
-    def value_penalty(self, w):
-        """Value of penalty at vector ``w``."""
+    def value_penalty(self, beta):
+        """Value of penalty at vector ``beta``."""
 
         sum_penalty = 0.
         for g in range(self.n_groups):
             grp_g_indices = self.grp_indices[
                 self.grp_ptr[g]: self.grp_ptr[g+1]]
-            w_g = w[grp_g_indices]
+            beta_g = beta[grp_g_indices]
 
-            sum_penalty += norm(w_g)
+            sum_penalty += norm(beta_g)
         sum_penalty *= (1 - self.tau)
-        sum_penalty += self.tau * np.sum(np.abs(w))
+        sum_penalty += self.tau * np.sum(np.abs(beta))
 
         return self.lmbd * sum_penalty
 
@@ -90,4 +89,4 @@ class Objective(BaseObjective):
         return lmbd_max
 
     def get_one_result(self):
-        return dict(w=np.zeros(self.n_features))
+        return dict(beta=np.zeros(self.n_features))

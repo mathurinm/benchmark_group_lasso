@@ -29,7 +29,7 @@ class Solver(BaseSolver):
 
     def run(self, n_iter):
         if n_iter == 0:
-            self.w = np.zeros(self.X.shape[1])
+            self.beta = np.zeros(self.X.shape[1])
             return
 
         X, y = self.X, self.y
@@ -37,7 +37,7 @@ class Solver(BaseSolver):
         self.model.max_iter = n_iter
         self.model.fit(X, y)
 
-        self.w = self.model.coef_
+        self.beta = self.model.coef_
 
     def get_result(self):
-        return dict(beta=self.w)
+        return dict(beta=self.beta)

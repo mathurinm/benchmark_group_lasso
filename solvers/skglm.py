@@ -46,12 +46,12 @@ class Solver(BaseSolver):
     def run(self, n_iter):
         self.solver.max_iter = n_iter
 
-        self.w, _, _ = self.solver.solve(
+        self.beta, _, _ = self.solver.solve(
             self.X, self.y, self.datafit, self.penalty
         )
 
     def get_result(self):
-        return dict(beta=self.w)
+        return dict(beta=self.beta)
 
     def warm_up(self):
         # cache numba compilation
