@@ -36,7 +36,7 @@ Apart from the problem, options can be passed to ``benchopt run``, to restrict t
 	$ benchopt run . -s solver1 -d dataset2 --max-runs 10 --n-repetitions 10
 
 
-Use ``benchopt run -h`` for more details about these options, or visit https://benchopt.github.io/api.html.
+Use ``benchopt run -h`` for more details about these options, or visit https://benchopt.github.io/user_guide/API_ref.html.
 
 
 
