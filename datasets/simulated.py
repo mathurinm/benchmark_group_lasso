@@ -11,17 +11,12 @@ class Dataset(BaseDataset):
     name = "Simulated"
 
     parameters = {
-        'n_samples, n_features': [(100, 200), (1000, 2000)],
-        'groups': [[10]]
+        'n_samples, n_features': [(200, 500), (1000, 2000)],
+        'groups': [5, 10]
     }
 
-    def __init__(self, n_samples=50, n_features=50, groups=10, random_state=0):
-        self.n_samples, self.n_features = n_samples, n_features
-        self.groups = groups
-        self.random_state = random_state
-
     def get_data(self):
-        rng = np.random.RandomState(self.random_state)
+        rng = np.random.RandomState(46)
         X, y, _ = make_correlated_data(
             self.n_samples, self.n_features, random_state=rng
         )

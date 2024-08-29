@@ -4,6 +4,7 @@ from benchopt import safe_import_context
 with safe_import_context() as import_ctx:
     import numpy as np
     import adelie as ad
+    from skglm.utils.data import grp_converter
 
 
 class Solver(BaseSolver):
@@ -23,8 +24,10 @@ class Solver(BaseSolver):
     def set_objective(self, X, y, lmbd, groups, grp_indices, grp_ptr, tau):
         self.X, self.y, self.lmbd, self.grp_size = X, y, lmbd, groups
 
-        self.groups = np.array(self.grp_size, dtype=np.int32)
-        self.omega = np.ones(self.X.shape[1] // self.grp_size)
+        _, grp_ptr = grp_converter(self.grp_size, self.X.shape[1])
+
+        self.groups = np.array(grp_ptr[:-1], dtype=np.int32)
+        self.omega = np.ones(len(self.groups), dtype=np.float64)
 
     def run(self, n_iter):
         if n_iter == 0:

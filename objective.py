@@ -67,22 +67,27 @@ class Objective(BaseObjective):
         )
 
     def _compute_lmbd_max(self):
-        # Size of each group, might be non-contiguous
-        size_groups = np.array(self.groups, dtype=np.int32)
 
-        # Omega stores the square root of the size of each group
+        # Get group indices and group pointers from grp_converter
+        _, grp_ptr = grp_converter(self.groups, self.n_features)
+
+        # Calculate size of each group
+        size_groups = np.diff(grp_ptr).astype(np.int32)
+
+        # omega stores the square root of the size of each group
         # It is used to scale the regularization parameters for each group
-        omega = np.sqrt(size_groups)
+        # Omega is the square root of each group size
+        omega = np.ones(size_groups.shape)
 
-        # g_start contains the starting index for each group, computed using
-        # the cumulative sum of group size.
-        g_start = np.zeros(len(size_groups), dtype=np.int32)
-        g_start[1:] = np.cumsum(size_groups[:-1])
+        # g_start contains the starting index for each group,
+        # which is the same as grp_ptr without the last element
+        # Start indices are just the pointers except the last one
+        g_start = grp_ptr[:-1]
 
         # Compute the maximum lambda value for regularization
-        lambda_max, _ = build_lambdas(
-            self.X, self.y, omega, size_groups, g_start, n_lambdas=1,
-            tau=self.tau)
+        lambda_max = build_lambdas(
+            self.X, self.y, omega,
+            size_groups, g_start, n_lambdas=1, tau=self.tau)[0]
 
         return lambda_max / self.n_samples
 
