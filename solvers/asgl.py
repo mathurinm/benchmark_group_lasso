@@ -25,8 +25,6 @@ class Solver(BaseSolver):
         'penalty': [
             'gl',
             'sgl',
-            'agl',
-            'asgl'
         ],
     }
 
