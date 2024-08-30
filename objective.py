@@ -7,6 +7,8 @@ with safe_import_context() as import_ctx:
 
     from skglm.utils.data import grp_converter
 
+    from benchmark_utils.helper import compute_lmbd_max
+
 
 class Objective(BaseObjective):
     name = "Sparse Group Lasso"
@@ -45,7 +47,8 @@ class Objective(BaseObjective):
         self.X, self.y = X, y
         self.groups = groups
 
-        lmbd_max = self._compute_lmbd_max()
+        lmbd_max = compute_lmbd_max(
+            self.X, self.y, self.tau, self.groups)
         self.lmbd = self.reg * lmbd_max
 
     def evaluate_result(self, beta):
@@ -62,31 +65,6 @@ class Objective(BaseObjective):
             X=self.X, y=self.y, lmbd=self.lmbd, groups=self.groups,
             grp_indices=self.grp_indices, grp_ptr=self.grp_ptr, tau=self.tau
         )
-
-    # this is a heuristic to compute lambda_max
-    # when tau == 0, it provides the exact value of lambda_max
-    # otherwise, it returns a cheaper to compute upper bound
-    def _compute_lmbd_max(self):
-        lmbd_max_l1 = 0.
-        lmbd_max_group = 0.
-        n_groups = len(self.grp_ptr) - 1
-
-        # Compute lambda max for the L1 part
-        lmbd_max_l1 = norm(self.X.T @ self.y, ord=np.inf) / self.n_samples
-
-        # Compute lambda max for the group lasso part
-        for g in range(n_groups):
-            grp_g_indices = self.grp_indices[
-                self.grp_ptr[g]: self.grp_ptr[g+1]]
-            lmbd_max_group = max(
-                lmbd_max_group,
-                norm(self.X[:, grp_g_indices].T @ self.y) / self.n_samples
-            )
-
-        # Combine the two parts using the tau parameter
-        lmbd_max = self.tau * lmbd_max_l1 + (1 - self.tau) * lmbd_max_group
-
-        return lmbd_max
 
     def get_one_result(self):
         return dict(beta=np.zeros(self.n_features))
