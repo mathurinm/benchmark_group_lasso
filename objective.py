@@ -7,7 +7,7 @@ with safe_import_context() as import_ctx:
 
     from skglm.utils.data import grp_converter
 
-    from gsroptim.sgl import build_lambdas
+    from benchmark_utils.helper import compute_lmbd_max
 
 
 class Objective(BaseObjective):
@@ -47,7 +47,8 @@ class Objective(BaseObjective):
         self.X, self.y = X, y
         self.groups = groups
 
-        lmbd_max = self._compute_lmbd_max()
+        lmbd_max = compute_lmbd_max(
+            self.X, self.y, self.tau, self.groups)
         self.lmbd = self.reg * lmbd_max
 
     def evaluate_result(self, beta):
@@ -64,23 +65,6 @@ class Objective(BaseObjective):
             X=self.X, y=self.y, lmbd=self.lmbd, groups=self.groups,
             grp_indices=self.grp_indices, grp_ptr=self.grp_ptr, tau=self.tau
         )
-
-    def _compute_lmbd_max(self):
-        _, grp_ptr = grp_converter(self.groups, self.n_features)
-
-        size_groups = np.diff(grp_ptr).astype(np.int32)
-
-        # omega stores the penalization of the size of each group
-        omega = np.ones(size_groups.shape)
-
-        # Start indices are just the pointers except the last one
-        g_start = grp_ptr[:-1]
-
-        lambda_max = build_lambdas(
-            self.X, self.y, omega,
-            size_groups, g_start, n_lambdas=1, tau=self.tau)[0]
-
-        return lambda_max / self.n_samples
 
     def get_one_result(self):
         return dict(beta=np.zeros(self.n_features))
