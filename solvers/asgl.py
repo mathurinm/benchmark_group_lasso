@@ -40,21 +40,22 @@ class Solver(BaseSolver):
 
         self.n_groups = len(self.grp_ptr) - 1
 
+        self.group_index = convert_to_group_index(self.groups, self.X.shape[1])
+
         weights_g = np.ones(self.n_groups, dtype=np.float64)
         weights_f = np.ones(self.X.shape[1])
 
+        # self.lmbd is multiplied by two to get the same factor in OLS
         self.model = Regressor(
             model='lm', penalization=self.penalty, fit_intercept=False,
             lambda1=2*self.lmbd, alpha=self.tau,
             individual_weights=weights_f, group_weights=weights_g
         )
         self.group_index = convert_to_group_index(self.groups, self.X.shape[1])
-        print('len(self.group_index)=', len(self.group_index))
-        print('n_features=', self.X.shape[1])
 
     def run(self, n_iter):
         self.model.max_iter = n_iter + 1
-        self.model.fit(self.X, self.y, **{'group_index': self.group_index})
+        self.model.fit(self.X, self.y, self.group_index)
 
     def get_result(self):
         return dict(beta=self.model.coef_.flatten())
